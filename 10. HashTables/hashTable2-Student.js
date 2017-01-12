@@ -1,9 +1,9 @@
 
 
 var HashTable = function() {
-  this._storage = ...;
-  this._count = 0;
-  this._limit = 8;
+    this._count = 0;
+    this._limit = 8;
+    this._storage = (new Array(this._limit)).fill(null);
 };
 
 
@@ -20,23 +20,42 @@ var HashTable = function() {
 //  Resize the storage if necessary (advanced)
 //
 HashTable.prototype.insert = function(key, value) {
-  //create an index for our storage location by passing it through our hashing function
-  //
-  var index = this.hashFunc(key, this._limit);
+    //create an index for our storage location by passing it through our hashing function
+    //
+    var index = this.hashFunc(key, this._limit);
 
-  //retrieve the bucket at this particular index in our storage, if one exists
-  //  [[ [k,v], [k,v], [k,v] ] , [ [k,v], [k,v] ]  [ [k,v] ] ]
-  //
-  var bucket = this._storage[index]
+    //retrieve the bucket at this particular index in our storage, if one exists
+    //  [[ [k,v], [k,v], [k,v] ] , [ [k,v], [k,v] ]  [ [k,v] ] ]
+    //
+    var bucket = this._storage[index];
 
     //does a bucket exist or do we get undefined when trying to retrieve said index?
     //
-    ...
+    //...
+    if (bucket === null){
+        this._storage[index] = [[key, value]];
+        this._count++;
+        if (this._count >= 0.75 * this._limit){
+            this.resize(2 * this._limit);
+        }
+        return this;
+    }
 
     //now iterate through our bucket to see if there are any conflicting
     //key value pairs within our bucket. If there are any, override them.
     //
-    ...
+    for (var i = 0, len = bucket.length; i < len; i++){
+        if (bucket[i][0] === key){
+            bucket[i][1] = value;
+            return this;
+        }
+    }
+    bucket.push([key, value]);
+    this._count++;
+    if (this._count >= 0.75 * this._limit){
+        this.resize(2 * this._limit);
+    }
+    return this;
 };
 
 
@@ -50,9 +69,27 @@ HashTable.prototype.insert = function(key, value) {
 //    Yes?  remove it, return old value
 //
 HashTable.prototype.remove = function(key) {
-  var index = this.hashFunc(key, this._limit);
+    var index = this.hashFunc(key, this._limit);
 
-  ...
+    //...
+    var bucket = this._storage[index];
+    if (bucket === null){
+        return null;
+    }
+    for (var i = 0, len = bucket.length; i < len; i++){
+        if (key === bucket[i][0]){
+            var tuple = bucket.splice(i,1);
+            if (!bucket.length){
+                this._storage[index] = null;
+            }
+            this._count--;
+            if (this._count < 0.375 * this._limit){
+                this.resize(0.5 * this._limit);
+            }
+            return tuple[1];
+        }
+    }
+    return null;
 };
 
 
@@ -66,44 +103,50 @@ HashTable.prototype.remove = function(key) {
 //    Yes?  return value
 //
 HashTable.prototype.retrieve = function(key) {
-  var index = this.hashFunc(key, this._limit);
-  var bucket = this._storage[index];
+    var index = this.hashFunc(key, this._limit);
+    var bucket = this._storage[index];
 
-  ...
+    for (var i = 0, len = bucket.length; i < len; i++){
+        if (bucket[i][0] === key){
+            return bucket[i][1];
+        }
+    }
+
+    return null;
 };
 
 
 HashTable.prototype.hashFunc = function(str, max) {
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    var letter = str[i];
-    hash = (hash << 5) + letter.charCodeAt(0);
-    hash = (hash & hash) % max;
-  }
-  return hash;
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        var letter = str[i];
+        hash = (hash << 5) + letter.charCodeAt(0);
+        hash = (hash & hash) % max;
+    }
+    return hash;
 };
 
 HashTable.prototype.resize = function(newLimit) {
-  var oldStorage = this._storage;
+    var oldStorage = this._storage;
 
-  this._limit = newLimit;
-  this._count = 0;
-  this._storage = [];
+    this._limit = newLimit;
+    this._count = 0;
+    this._storage = (new Array(this._limit)).fill(null);
 
-  oldStorage.forEach(function(bucket) {
-    if (!bucket) {
-      return;
-    }
-    for (var i = 0; i < bucket.length; i++) {
-      var tuple = bucket[i];
-      this.insert(tuple[0], tuple[1]);
-    }
-  }.bind(this));
+    oldStorage.forEach(function(bucket) {
+        if (!bucket) {
+            return;
+        }
+        for (var i = 0; i < bucket.length; i++) {
+            var tuple = bucket[i];
+            this.insert(tuple[0], tuple[1]);
+        }
+    }.bind(this));
 };
 
 HashTable.prototype.retrieveAll = function() {
-  console.log(this._storage);
-  //console.log(this._limit);
+    console.log(this._storage);
+    //console.log(this._limit);
 };
 
 /******************************TESTS*******************************/
@@ -186,7 +229,8 @@ hashT.retrieveAll();
  ,
  ,
  ,
- [ [ 'Biff Tanin', '987-589-1970' ] ] ]
+ [ [ 'Biff Tanin', '987-589-1970' ] ],
+ ]
 
 
 
