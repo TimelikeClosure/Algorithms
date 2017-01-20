@@ -2,7 +2,7 @@
 
 // Create an undirected graph
 //
-//  [ ] .containsNode() returns whether the node exists
+//  [X] .containsNode() returns whether the node exists
 //  [X] .addNode() adds a new node to the graph
 //  [ ] .removeNode() remove the node from the graph, and any connected edges
 //  [ ] .containsEdge() returns whether two nodes are connected
@@ -52,12 +52,22 @@ Node.prototype.addEdge = function(end) {
 
 
 
-Graph.prototype.containsNode = function(node) {
-  //...
+Graph.prototype.containsNode = function (node) {
+  var list = this.node_list;
+  for (var i = 0, list = this.node_list, length = list.length; i < length; i++){
+    if (node === list[i].name) {
+      return true;
+    }
+  }
+  return false;
 };
 
-Graph.prototype.addNode = function(node) {
-  this.node_list.push(new Node(node));
+Graph.prototype.addNode = function (node) {
+  if (!this.containsNode(node)) {
+    this.node_list.push(new Node(node));
+    return true;
+  }
+  return false;
 };
 
 Graph.prototype.removeNode = function(node) {
@@ -90,14 +100,14 @@ Graph.prototype.printContents = function() {
 // -------------- TEST -------------
 
 var graph = new Graph();
-graph.addNode("start");
-graph.addNode("end");
-graph.addNode("here");
-graph.addNode("there");
-graph.addNode("up");
-graph.addNode("down");
-graph.addNode("left");
-graph.addNode("right");
+graph.addNode("start"); if (!graph.containsNode("start")){console.log('Should contain "start"') };
+graph.addNode("end"); if (!graph.containsNode("end")){console.log('Should contain "end"') };
+graph.addNode("here"); if (!graph.containsNode("here")){console.log('Should contain "here"') };
+graph.addNode("there"); if (!graph.containsNode("there")){console.log('Should contain "there"') };
+graph.addNode("up"); if (!graph.containsNode("up")){console.log('Should contain "up"') };
+graph.addNode("down"); if (!graph.containsNode("down")){console.log('Should contain "down"') };
+graph.addNode("left"); if (!graph.containsNode("left")){console.log('Should contain "left"') };
+graph.addNode("right"); if (!graph.containsNode("right")){console.log('Should contain "right"') };
 
 graph.addEdge("start", "end");
 graph.addEdge("start", "finish");
@@ -107,10 +117,9 @@ graph.addEdge("up", "left");
 graph.addEdge("up", "right");
 
 graph.removeEdge("up", "right");
-graph.removeNode("up");
+graph.removeNode("up"); if (graph.containsNode("up")){console.log('Should not contain "up"') };
 
-graph.containsEdge("start", "end");
-graph.containsEdge("alpha", "omega");
+console.log(graph.containsEdge("start", "end"));
+console.log(graph.containsEdge("alpha", "omega"));
 
 graph.printContents();
-
