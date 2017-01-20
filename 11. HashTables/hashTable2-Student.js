@@ -10,13 +10,13 @@ var HashTable = function() {
 // Algorithm of an insert
 //
 //  Compute numeric hash of the key into index
-//  Attempt to get bucket based on index
-//  was it previously created?
-//    No?  Create one
+//  read bucket based on index
+//  was it previously filled?
+//    No?  Create a new bucket
 //    yes?  Use it
-//  Any conflicting values in the bucket? based on key
+//  Any collisions? based on key
 //    No?  Insert value
-//    Yes?  Override value
+//    Yes?  Replace value
 //  Resize the storage if necessary (advanced)
 //
 HashTable.prototype.insert = function(key, value) {
@@ -24,8 +24,12 @@ HashTable.prototype.insert = function(key, value) {
     //
     var index = this.hashFunc(key, this._limit);
 
-    //retrieve the bucket at this particular index in our storage, if one exists
-    //  [[ [k,v], [k,v], [k,v] ] , [ [k,v], [k,v] ]  [ [k,v] ] ]
+    // retrieve the bucket at this particular index in our storage, if one exists
+    //
+    //  |<--------------- Buckets --------------------->|
+    //   |<---- Bucket ----->|  ...              ...
+    //    |<->| Entry
+    //  [[[k,v], [k,v], [k,v]], [[k,v], [k,v]],  [[k,v]]]
     //
     var bucket = this._storage[index];
 
@@ -64,7 +68,7 @@ HashTable.prototype.insert = function(key, value) {
 //  Compute numeric hash of the key into index
 //  does numeric key exist in bucket? based on index
 //    No?  Do nothing
-//  does value exist in values? based on key
+//  does value exist in entries? based on key
 //    No?  Do nothing
 //    Yes?  remove it, return old value
 //
@@ -98,7 +102,7 @@ HashTable.prototype.remove = function(key) {
 //  Compute numeric hash of the key into index
 //  does numeric key exist in bucket? based on index
 //    No?  Do nothing
-//  does value exist in values? based on key
+//  does value exist in entries? based on key
 //    No?  Do nothing
 //    Yes?  return value
 //
