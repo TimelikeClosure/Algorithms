@@ -6,7 +6,7 @@
 //  [X] .addNode() adds a new node to the graph
 //  [ ] .removeNode() remove the node from the graph, and any connected edges
 //  [ ] .containsEdge() returns whether two nodes are connected
-//  [ ] .addEdge() creates a connection between two existing nodes
+//  [X] .addEdge() creates a connection between two existing nodes
 //  [ ] .removeEdge() removes the connection between two nodes
 //  [X] .printContents() prints the contents of the graph
 //
@@ -28,8 +28,8 @@ function Graph() {
 }
 
 function Node(name) {
-  this.edge_list = [];
   this.name = name;
+  this.edge_list = [];
 }
 
 
@@ -45,16 +45,24 @@ Array.prototype.contains = function(name) {
   return false;
 };
 
-Node.prototype.addEdge = function(end) {
-  this.edge_list.push(end);
+Node.prototype.containsEdge = function (edge) {
+  return (this.edge_list.indexOf(edge) !== -1);
+}
+
+Node.prototype.addEdge = function (edge) {
+  var contains = this.containsEdge(edge);
+  if (!contains) {
+    this.edge_list.push(edge);
+  }
+  return !contains;
 };
 
 
 
 
-Graph.prototype.containsNode = function (node) {
+Graph.prototype.containsNode = function (node, index = 0) {
   var list = this.node_list;
-  for (var i = 0, list = this.node_list, length = list.length; i < length; i++){
+  for (var i = index, list = this.node_list, length = list.length; i < length; i++){
     if (node === list[i].name) {
       return true;
     }
@@ -82,7 +90,21 @@ Graph.prototype.containsEdge = function(start, end) {
 };
 
 Graph.prototype.addEdge = function(start, end) {
-  //...
+  for (var i = 0, list = this.node_list, length = list.length; i < length; i++){
+    switch (list[i].name) {
+      case start:
+        if (this.containsNode(end, i + 1)) {
+          return list[i].addEdge(end);
+        }
+        return false;
+      case end:
+        if (this.containsNode(start, i + 1)) {
+          return list[i].addEdge(start);
+        }
+        return false;
+    }
+  }
+  return false;
 };
 
 Graph.prototype.removeEdge = function(start, end) {
@@ -115,6 +137,8 @@ graph.addEdge("here", "there");
 graph.addEdge("up", "down");
 graph.addEdge("up", "left");
 graph.addEdge("up", "right");
+graph.addEdge("up", "left");
+graph.addEdge("left", "up");
 
 graph.removeEdge("up", "right");
 graph.removeNode("up"); if (graph.containsNode("up")){console.log('Should not contain "up"') };
