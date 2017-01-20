@@ -4,7 +4,7 @@
 //
 //  [X] .containsNode() returns whether the node exists
 //  [X] .addNode() adds a new node to the graph
-//  [ ] .removeNode() remove the node from the graph, and any connected edges
+//  [X] .removeNode() remove the node from the graph, and any connected edges
 //  [X] .containsEdge() returns whether two nodes are connected
 //  [X] .addEdge() creates a connection between two existing nodes
 //  [X] .removeEdge() removes the connection between two nodes
@@ -45,20 +45,20 @@ Array.prototype.contains = function(name) {
   return false;
 };
 
-Node.prototype.containsEdge = function (edge) {
-  return (this.edge_list.indexOf(edge) !== -1);
+Node.prototype.containsEdge = function (node) {
+  return (this.edge_list.indexOf(node) !== -1);
 }
 
-Node.prototype.addEdge = function (edge) {
-  var contains = this.containsEdge(edge);
+Node.prototype.addEdge = function (node) {
+  var contains = this.containsEdge(node);
   if (!contains) {
-    this.edge_list.push(edge);
+    this.edge_list.push(node);
   }
   return !contains;
 };
 
-Node.prototype.removeEdge = function (edge) {
-  var index = this.edge_list.indexOf(edge);
+Node.prototype.removeEdge = function (node) {
+  var index = this.edge_list.indexOf(node);
   if (index === -1) {
     return false;
   }
@@ -86,8 +86,14 @@ Graph.prototype.addNode = function (node) {
   return false;
 };
 
-Graph.prototype.removeNode = function(node) {
-  //...
+Graph.prototype.removeNode = function (node) {
+  for (var list = this.node_list, i = list.length - 1; i >= 0; i--){
+    if (list[i].name !== node) {
+      list[i].removeEdge(node);
+    } else {
+      list.splice(i, 1);
+    }
+  }
 };
 
 
