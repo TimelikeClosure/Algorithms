@@ -3,12 +3,12 @@
 // Create an undirected graph
 //
 //  [ ] .containsNode() returns whether the node exists
-//  [ ] .addNode() adds a new node to the graph
+//  [X] .addNode() adds a new node to the graph
 //  [ ] .removeNode() remove the node from the graph, and any connected edges
 //  [ ] .containsEdge() returns whether two nodes are connected
 //  [ ] .addEdge() creates a connection between two existing nodes
 //  [ ] .removeEdge() removes the connection between two nodes
-//  [ ] .printEdges() prints the contents of the graph
+//  [X] .printContents() prints the contents of the graph
 //
 //  [ ] What is the Big-O time complexity of each function?
 //
@@ -53,35 +53,35 @@ Node.prototype.addEdge = function(end) {
 
 
 Graph.prototype.containsNode = function(node) {
-  ...
+  //...
 };
 
 Graph.prototype.addNode = function(node) {
-  ...
+  this.node_list.push(new Node(node));
 };
 
 Graph.prototype.removeNode = function(node) {
-  ...
+  //...
 };
 
 
 
 
 Graph.prototype.containsEdge = function(start, end) {
-  ...
+  //...
 };
 
 Graph.prototype.addEdge = function(start, end) {
-  ...
+  //...
 };
 
 Graph.prototype.removeEdge = function(start, end) {
-  ...
+  //...
 };
 
 
-Graph.prototype.printNodes = function() {
-  ...
+Graph.prototype.printContents = function() {
+  console.log(this.node_list);
 };
 
 
@@ -112,5 +112,5 @@ graph.removeNode("up");
 graph.containsEdge("start", "end");
 graph.containsEdge("alpha", "omega");
 
-graph.printNodes();
+graph.printContents();
 
