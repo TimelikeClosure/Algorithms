@@ -7,7 +7,7 @@
 //  [ ] .removeNode() remove the node from the graph, and any connected edges
 //  [X] .containsEdge() returns whether two nodes are connected
 //  [X] .addEdge() creates a connection between two existing nodes
-//  [ ] .removeEdge() removes the connection between two nodes
+//  [X] .removeEdge() removes the connection between two nodes
 //  [X] .printContents() prints the contents of the graph
 //
 //  [ ] What is the Big-O time complexity of each function?
@@ -57,6 +57,14 @@ Node.prototype.addEdge = function (edge) {
   return !contains;
 };
 
+Node.prototype.removeEdge = function (edge) {
+  var index = this.edge_list.indexOf(edge);
+  if (index === -1) {
+    return false;
+  }
+  this.edge_list.splice(index, 1);
+  return true;
+};
 
 
 
@@ -116,7 +124,15 @@ Graph.prototype.addEdge = function(start, end) {
 };
 
 Graph.prototype.removeEdge = function(start, end) {
-  //...
+  for (var i = 0, list = this.node_list, length = list.length; i < length; i++){
+    switch (list[i].name) {
+      case start:
+        return list[i].removeEdge(end);
+      case end:
+        return list[i].removeEdge(start);
+    }
+  }
+  return false;
 };
 
 
