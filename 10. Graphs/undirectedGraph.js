@@ -5,7 +5,7 @@
 //  [X] .containsNode() returns whether the node exists
 //  [X] .addNode() adds a new node to the graph
 //  [ ] .removeNode() remove the node from the graph, and any connected edges
-//  [ ] .containsEdge() returns whether two nodes are connected
+//  [X] .containsEdge() returns whether two nodes are connected
 //  [X] .addEdge() creates a connection between two existing nodes
 //  [ ] .removeEdge() removes the connection between two nodes
 //  [X] .printContents() prints the contents of the graph
@@ -86,7 +86,15 @@ Graph.prototype.removeNode = function(node) {
 
 
 Graph.prototype.containsEdge = function(start, end) {
-  //...
+  for (var i = 0, list = this.node_list, length = list.length; i < length; i++){
+    switch (list[i].name) {
+      case start:
+        return list[i].containsEdge(end);
+      case end:
+        return list[i].containsEdge(start);
+    }
+  }
+  return false;
 };
 
 Graph.prototype.addEdge = function(start, end) {
@@ -144,6 +152,8 @@ graph.removeEdge("up", "right");
 graph.removeNode("up"); if (graph.containsNode("up")){console.log('Should not contain "up"') };
 
 console.log(graph.containsEdge("start", "end"));
+console.log(graph.containsEdge("end", "start"));
+console.log(graph.containsEdge("here", "up"));
 console.log(graph.containsEdge("alpha", "omega"));
 
 graph.printContents();
