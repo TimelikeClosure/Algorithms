@@ -38,3 +38,6 @@ jspm_packages
 
 # PHPStorm IDE project files
 .idea
+
+# VS Code project files
+.vscode
