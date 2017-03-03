@@ -27,7 +27,7 @@
 
   BONUS:
 
-    [ ] Without changing any code for this, observe what happens when either of the front
+    [x] Without changing any code for this, observe what happens when either of the front
           or the back meets in the middle, and continues to grow.  You'll need to write
           some code to trigger the conditions
 
@@ -40,11 +40,11 @@ var DoubleStack = function(initialCapacity) {
 };
 
 DoubleStack.prototype.push = function(value) {
-  this.storage[this.storage.length - ++this.length - this.lengthFront] = value;
+  this.storage[this.storage.length - ++this.length + this.lengthFront] = value;
 };
 
 DoubleStack.prototype.pop = function() {
-  return this.storage[this.storage.length - (this.length--) - this.lengthFront];
+  return this.storage[this.storage.length - (this.length--) + this.lengthFront];
 };
 
 DoubleStack.prototype.pushFront = function (value) {
@@ -84,7 +84,6 @@ console.log('.pop() test passed: ' + ((ds.pop() === 3) && dsTest([, , , , , , 2,
 
 // .pushFront() should grow the front stack toward the center
 
-
 ds.pushFront(4);
 ds.pushFront(5);
 ds.pushFront(6);
@@ -94,3 +93,16 @@ console.log('.pushFront() test passed: ' + dsTest([4, 5, 6, , , , 2, 1], 5, 3));
 // .popFront() should shrink the front stack from the center
 
 console.log('.popFront() test passed: ' + ((ds.popFront() === 6) && dsTest([4, 5, , , , , 2, 1], 4, 2)));
+
+// test collision
+
+ds.push(7);
+ds.pushFront(8);
+ds.push(9);
+ds.pushFront(10);
+ds.push(11);
+ds.pushFront(12);
+ds.push(13);
+ds.pushFront(14);
+
+console.log('push collision test passed: ' + dsTest([4, 5, 13, 11, 12, 14, 2, 1], 12, 6));
